@@ -18,6 +18,10 @@ function filterTasks(taskList, estat, category, priority) {
     return matchCategory && matchPriority && matchEstat;
   });
 }
+
+
+
+
 function App() {
 
   const [tasques, setTasques] = useState(TasquesInicials);
@@ -26,8 +30,39 @@ function App() {
   const [selectedCategory, setselectedCategory] = useState('Totes'); 
   const [selectedPriority, setselectedPriority] = useState('Totes'); 
   
-  
+  function canviarEstat(id) {
+    setTasques((tasquesActuals) =>
+      tasquesActuals.map((task) =>
+        task.id === id
+          ? { ...task, completada: !task.completada }
+          : task
+      )
+    );
+  }
 
+
+  //////////////FORMULARI////////////////////////
+
+  const [mostrarFormulari, setMostrarFormulari] = useState(false);
+
+  function afegirTasca(novaTasca) {
+    setTasques((tasquesActuals) => {
+      const novaId = tasquesActuals.length + 1;
+      return [...tasquesActuals, { ...novaTasca, id: novaId }];
+    })
+
+    setMostrarFormulari(false); 
+  };
+
+
+
+
+
+
+
+
+
+  //////////////FORMULARI////////////////////////
   return (
     <div>
       <Header />
@@ -43,14 +78,21 @@ function App() {
           setselectedPriority={setselectedPriority}      
         />
 
+        {/* <button onClick={() => setTasques([...tasques, </Formulari>])}>Afegir tasca</button> */}
+        <button onClick={() => setMostrarFormulari(!mostrarFormulari)}>
+          {mostrarFormulari ? 'Amagar formulari' : 'Afegir tasca'}
+        </button>
+
+        {mostrarFormulari && <Formulari onAdd={afegirTasca} />}
 
 
         <ListTasks 
-          title="TEST" 
+          title="Llistat de tasques" 
           task={filterTasks(tasques, selectedEstat,selectedCategory,selectedPriority)}
+          canviarEstat={canviarEstat}
         />
 
-        <ListTasks title="TEST" task={TasquesInicials}/>
+        {/* <ListTasks title="Llistat de tasques" task={TasquesInicials}/> */}
 
 
       </div>
@@ -62,7 +104,7 @@ function App() {
 
 
 /////////////////////////////
-function Formulari() {
+function Formulari({onAdd}) {
   // Estados iniciales de los campos individuales, conservados como referencia del aprendizaje.
   // const [title, setTitle] = useState('');
   // const [description, setDescription] = useState('');
@@ -70,48 +112,47 @@ function Formulari() {
   // const [urgent, setUrgent] = useState(false);
 
   // Estado para mensajes de error; todavía no se utiliza en este formulario.
-  const [error, setError] = useState({
-      nom: '',
-      edat: '',
-      description: '',
-      estat: '',
-      urgent: ''
+   const [error, setError] = useState({
+    // id: '', 
+    titol: '', 
+    descripcio: '', 
+    categoria: '', 
+    prioritat: '', 
+    completada: false 
   });
-  // Guarda juntos todos los valores que introduce el usuario.
+
   const [formulari, setFormulari] = useState({
-    nom: '',
-    edat: '',
-    description: '',
-    estat: '',
-    urgent: false
+    // id: '', 
+    titol: '', 
+    descripcio: '', 
+    categoria: '', 
+    prioritat: '', 
+    completada: false 
   });
 
-    // Ejemplo anterior: actualizaba el estado de un único campo de texto.
-    // function handleTitleChange(event) {
-    //   setTitle(event.target.value)
-    //   console.log(event.target.value)
-    // }
 
-  // Gestiona el envío y evita que el navegador recargue la página.
   function handleSubmit(event) {
     event.preventDefault(); 
 
     const errorNou = {
-      nom: '',
-      edat: '',
-      description: '',
-      estat: ''
+      // id: '',
+      titol: '',
+      descripcio: '',
+      categoria: '',
+      prioritat: '',
+      completada: ''
     };
 
-    if (formulari.nom.trim() === '') {errorNou.nom = 'El nom és obligatori';}
-    if (formulari.edat.trim() === '') {errorNou.edat = "L'edat és obligatòria";}
-    if (formulari.description.trim() === '') {errorNou.description = 'La descripció és obligatòria';}
-    if (formulari.estat === '') {errorNou.estat = 'La prioritat és obligatòria';}
+    // if (formulari.id.trim() === '') {errorNou.id = 'L\'ID és obligatori';}
+    if (formulari.titol.trim() === '') {errorNou.titol = 'El títol és obligatori';}
+    if (formulari.descripcio.trim() === '') {errorNou.descripcio = 'La descripció és obligatòria';}
+    if (formulari.categoria === '') {errorNou.categoria = 'La categoria és obligatòria';}
+    if (formulari.prioritat === '') {errorNou.prioritat = 'La prioritat és obligatòria';}
     setError(errorNou);
 
     if (Object.values(errorNou).some((message) => message !== '')) {return;}
 
-
+    onAdd(formulari);
     console.log('Formulari enviat:', formulari);
   }
 
@@ -133,93 +174,104 @@ function Formulari() {
 
 
 
+
   return (
   // Agrupa los campos y llama a handleSubmit cuando se envía el formulario.
   <>
-  <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate>
+      {/* Titol */}
+      <label>titol</label>
+      <br/>
+      
+      <input
+        required
+        type="text"
+        name="titol"
+        key="id02"
+        value={formulari.titol}
+        onChange={handleInput} 
+      ></input>
+
+      <div style={{ color: 'red' }} >
+        {error.titol}
+      </div>
+
+      {/* Descripció */}
+
+      <br/>
+      <label>descripcio</label>
+      <br/>
+      
+      <input
+        required
+        type="text"
+        name="descripcio"
+        key="id03"
+        value={formulari.descripcio}
+        onChange={handleInput}
+      ></input>
+
+      <div style={{ color: 'red' }} >
+        {error.descripcio}
+      </div>
 
 
-    {/* Campo obligatorio para escribir el nombre. */}
-    <label>Nom</label>
-    <br/>
-    
-    <input
-      required
-      type="text"
-      name="nom"
-      key="id02"
-      value={formulari.nom}
-      onChange={handleInput} 
-    ></input>
-    
-    <div style={{ color: 'red' }} >
-      {error.nom}
-    </div>
 
-    <br/>
-    {/* Campo para introducir la edad como número. */}
-    <label>edat</label>
-    <br/>
-    
-    <input
-      required
-      type="number"
-      name="edat"
-      key="id03"
-      value={formulari.edat}
-      onChange={handleInput}
-    ></input>
+      
+      {/* Categoria */}
+      <br/>
+        <label>Category</label>
+      <br/>
 
-    <div style={{ color: 'red' }} >
-      {error.edat}
-    </div>
+      <select name="categoria" value={formulari.categoria} onChange={handleInput} required  >
+        <option value=""></option>
+        <option value="Feina">Feina</option>
+        <option value="Personal">Personal</option>
+        <option value="Estudis">Estudis</option>
+      </select>
 
 
-    <br/>
-    {/* Área de texto para escribir una descripción más larga. */}
-    <label>Description</label>
-    <br/>
-
-    <textarea
-      required
-      name="description"
-      value={formulari.description}
-      onChange={handleInput}
-    ></textarea>
-  
-    <div style={{ color: 'red' }} >
-      {error.description}
-    </div>
-
-    <br/>
-    {/* Selector de prioridad; su opción elegida se guarda en formulari.estat. */}
-    <label>Priority</label>
-    <br/>
-
-    <select name="estat" value={formulari.estat} onChange={handleInput} required  >
-      <option value=""></option>
-      <option value="low">Low</option>
-      <option value="medium">Medium</option>
-      <option value="high">High</option>
-    </select>
+      <div style={{ color: 'red' }} >
+        {error.categoria}
+      </div>
 
 
-    <br/>
-    {/* Casilla que guarda si el elemento es urgente o no. */}
-    <label>Urgent</label>
+      {/* Prioritat */}
+      <br/>
+        <label>Priority</label>
+      <br/>
 
-    <input type="checkbox" name="urgent"
-      checked={formulari.urgent}
-      onChange={handleInput}
-    ></input>
+      <select name="prioritat" value={formulari.prioritat} onChange={handleInput} required  >
+        <option value=""></option>
+        <option value="Baixa">Baixa</option>
+        <option value="Mitjana">Mitjana</option>
+        <option value="Alta">Alta</option>
+      </select>
 
-    
 
-    {/* Envía el formulario y activa handleSubmit. */}
-    <button type="submit" >Submit</button>
 
-  </form>
+      <div style={{ color: 'red' }} >
+        {error.prioritat}
+      </div>
 
+
+      {/* Completada */}
+      <br/>
+        <label>Estat</label>
+
+      <input type="checkbox" name="completada"
+        checked={formulari.completada}
+        onChange={handleInput}
+      ></input>
+      
+
+      <div style={{ color: 'red' }} >
+        {error.completada}
+      </div>
+
+      <button type="submit" >Enviar</button>
+
+      </form>
   </>
   )
 }
