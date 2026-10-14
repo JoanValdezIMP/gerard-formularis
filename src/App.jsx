@@ -1,14 +1,68 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { Footer } from './components/layout/Footer.jsx'
+import { Header } from './components/layout/Header.jsx'
+import { ListTasks } from './components/lists/List.jsx'
+import { FilterButtons } from './components/FilterButtons.jsx'
 
+import { TasquesInicials } from './data/Data.jsx'
+// import './App.css'
+function filterTasks(taskList, estat, category, priority) {
+  return taskList.filter((task) => {
+    const matchCategory = category === 'Totes' || task.categoria === category;
+    const matchPriority = priority === 'Totes' || task.prioritat === priority;
+    const matchEstat = 
+      estat === 'Totes' || 
+      (estat === 'Completades' && task.completada) || 
+      (estat === 'Pendents' && !task.completada);
 
-
-
-
+    return matchCategory && matchPriority && matchEstat;
+  });
+}
 function App() {
+
+  const [tasques, setTasques] = useState(TasquesInicials);
+
+  const [selectedEstat, setselectedEstat] = useState('Pendents'); 
+  const [selectedCategory, setselectedCategory] = useState('Totes'); 
+  const [selectedPriority, setselectedPriority] = useState('Totes'); 
+  
+  
+
+  return (
+    <div>
+      <Header />
+  
+      <div className="App">
+
+        <FilterButtons
+          selectedEstat={selectedEstat}
+          setselectedEstat={setselectedEstat}
+          selectedCategory={selectedCategory}
+          setselectedCategory={setselectedCategory}
+          selectedPriority={selectedPriority}
+          setselectedPriority={setselectedPriority}      
+        />
+
+
+
+        <ListTasks 
+          title="TEST" 
+          task={filterTasks(tasques, selectedEstat,selectedCategory,selectedPriority)}
+        />
+
+        <ListTasks title="TEST" task={TasquesInicials}/>
+
+
+      </div>
+
+      <Footer />
+    </div>
+  )
+}
+
+
+/////////////////////////////
+function Formulari() {
   // Estados iniciales de los campos individuales, conservados como referencia del aprendizaje.
   // const [title, setTitle] = useState('');
   // const [description, setDescription] = useState('');

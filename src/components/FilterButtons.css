@@ -1,0 +1,50 @@
+/* Contenedor principal de los filtros */
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: aliceblue;
+    border-radius: 10px;
+    margin: 20px 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filter-group h3 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.buttons-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.buttons-row button {
+    padding: 8px 16px;
+    background-color: white;
+    border: 2px solid rgb(206, 220, 245); 
+    border-radius: 20px; 
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out; 
+}
+
+.buttons-row button:hover {
+    background-color: rgb(206, 220, 245);
+    transform: translateY(-2px); 
+}
+
+.buttons-row button.active {
+    background-color: #2b5c92; 
+    color: white;
+    border-color: #2b5c92;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
